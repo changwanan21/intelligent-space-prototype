@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新能源汽车智能空间 - 智能空间</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-bg { background: linear-gradient(135deg, #0a1628 0%, #0d2a5c 50%, #0a3a6e 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(37,99,235,0.12); }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+        .fade-up { animation: fadeUp 0.55s ease-out both; }
+        .step-line { position:relative; }
+        .step-line::after { content:''; position:absolute; top:28px; left:50%; width:100%; height:2px; background:linear-gradient(90deg,#2563eb,#06b6d4); z-index:0; }
+        .step-line:last-child::after { display:none; }
+
+
+        /* 数据脉冲点动画 */
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(1.7)} }
+        .pulse { animation: pulse 2s infinite; }
+        /* 内嵌创建面板 */
+        .create-panel { max-height: 0; overflow: hidden; transition: max-height 0.55s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease; opacity: 0; }
+        .create-panel.open { max-height: 900px; opacity: 1; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spin-anim { animation: spin 0.8s linear infinite; }
+        @keyframes drawCircle { from { stroke-dashoffset: 283; } to { stroke-dashoffset: 0; } }
+        .draw-circle { stroke-dasharray: 283; animation: drawCircle 1.2s ease-out forwards; }
+        @keyframes checkStroke { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
+        .check-stroke { stroke-dasharray: 40; animation: checkStroke 0.5s 0.6s ease-out forwards; }
+        /* 步骤内嵌进度条 */
+        .inline-step-bar { display: flex; align-items: center; }
+        .inline-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; transition: all 0.35s; }
+        .inline-dot.done { background: #2563eb; color: white; }
+        .inline-dot.active { background: linear-gradient(135deg, #2563eb, #06b6d4); color: white; box-shadow: 0 0 0 5px rgba(37,99,235,0.15); }
+        .inline-dot.todo { background: #f1f5f9; color: #94a3b8; }
+        .inline-conn { flex: 1; height: 2px; background: #e2e8f0; transition: background 0.35s; }
+        .inline-conn.done { background: linear-gradient(90deg, #2563eb, #06b6d4); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- 顶部导航 -->
+<nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <a href="智能空间首页.html" class="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                返回首页
+            </a>
+            <span class="text-gray-300">|</span>
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                </div>
+                <span class="font-bold text-gray-800">智能空间</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="text-sm text-gray-500">场景详情</span>
+            <span class="text-gray-300">/</span>
+            <span class="text-sm font-medium text-blue-600">新能源汽车</span>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero 区域 -->
+<section class="hero-bg py-16 relative overflow-hidden">
+    <!-- 背景装饰网格 -->
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(100,160,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(100,160,255,0.05) 1px,transparent 1px);background-size:48px 48px;"></div>
+    <!-- 光晕 -->
+    <div style="position:absolute;top:-80px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(37,99,235,0.18),transparent 70%);border-radius:50%;"></div>
+    <div style="position:absolute;bottom:-100px;left:-60px;width:400px;height:400px;background:radial-gradient(circle,rgba(6,182,212,0.12),transparent 70%);border-radius:50%;"></div>
+    
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="flex items-center gap-3 mb-6 fade-up">
+            <div class="px-3 py-1 bg-blue-500/20 border border-blue-400/30 rounded-full">
+                <span class="text-blue-300 text-xs font-medium">🚗 行业专题</span>
+            </div>
+            <div class="px-3 py-1 bg-cyan-500/20 border border-cyan-400/30 rounded-full">
+                <span class="text-cyan-300 text-xs font-medium">✦ 热门场景</span>
+            </div>
+        </div>
+        <h1 class="text-4xl font-bold text-white mb-4 fade-up" style="animation-delay:.1s">新能源汽车智能空间</h1>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl leading-relaxed fade-up" style="animation-delay:.2s">
+            构建多维度、多层级标引体系的专题数据库，聚焦重点汽车企业、行业重点技术专利数据，满足汽车企业和研究机构在宏观技术、战略研究等方面的需求。
+        </p>
+        <div class="flex items-center gap-5 mb-10 fade-up" style="animation-delay:.25s">
+            <div class="flex items-center gap-2 text-sm text-blue-300">
+                <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                收藏 11
+            </div>
+            <div class="flex items-center gap-2 text-sm text-blue-300">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                浏览 33
+            </div>
+            <div class="flex items-center gap-2 text-sm text-blue-300">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                328 家企业已使用
+            </div>
+        </div>
+        <button onclick="openCreateFlow()" class="px-8 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold hover:opacity-90 transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2 fade-up" style="animation-delay:.3s">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            立即创建空间
+        </button>
+    </div>
+</section>
+
+<!-- ======================== 内嵌创建流程面板 ======================== -->
+<section id="createPanel" class="create-panel">
+    <div style="background: linear-gradient(135deg, #0a1628 0%, #0d2155 55%, #0a3070 100%); border-top: 1px solid rgba(100,160,255,0.15); border-bottom: 1px solid rgba(100,160,255,0.15);">
+        <!-- 面板顶部标题 -->
+        <div class="max-w-5xl mx-auto px-6 pt-8 pb-0">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-white">创建智能空间</h2>
+                    <p class="text-sm text-blue-300 mt-1">新能源汽车专题 · 专属配置 · 快速创建</p>
+                </div>
+                <button onclick="closeCreateFlow()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                    <svg class="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <!-- 步骤进度条 -->
+            <div class="inline-step-bar mb-8">
+                <div class="inline-dot done" id="dot1">1</div>
+                <div class="inline-conn done" id="conn1"></div>
+                <div class="inline-dot todo" id="dot2">2</div>
+                <div class="inline-conn" id="conn2"></div>
+                <div class="inline-dot todo" id="dot3">3</div>
+            </div>
+            <div class="flex text-sm mb-8 -mt-4">
+                <div class="flex-1 text-left text-blue-300" id="label1">选择数据集</div>
+                <div class="flex-1 text-center text-gray-500" id="label2">选择AI模型</div>
+                <div class="flex-1 text-right text-gray-500" id="label3">确认创建</div>
+            </div>
+        </div>
+
+        <!-- 步骤内容 -->
+        <div class="max-w-5xl mx-auto px-6 pb-8" style="min-height:280px;">
+
+            <!-- 步骤1：数据集 -->
+            <div id="step1">
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <!-- 数据集卡片 -->
+                    <div class="bg-white/8 backdrop-blur border border-blue-400/20 rounded-2xl p-6 relative" style="border-color:rgba(59,130,246,0.4);background:rgba(37,99,235,0.12);">
+                        <div style="position:absolute;top:-10px;right:16px;background:linear-gradient(135deg,#2563eb,#06b6d4);color:white;font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px;">✦ 预设配置</div>
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white text-base mb-1">全球新能源汽车专利数据库</h4>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="px-2 py-0.5 bg-green-500/20 border border-green-400/30 text-green-300 text-xs rounded-full">实时更新</span>
+                                    <span class="px-2 py-0.5 bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs rounded-full">已绑定</span>
+                                </div>
+                                <p class="text-sm text-blue-200/80 leading-relaxed">覆盖全球主要专利局（中、美、欧、日、韩）新能源汽车专利文献，含发明、实用新型、外观三类。</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 mb-4">
+                            <div class="bg-blue-900/30 rounded-lg p-3 text-center border border-blue-400/15">
+                                <div class="text-xl font-bold text-cyan-300">2,395</div>
+                                <div class="text-xs text-blue-300/60 mt-0.5">专利总量</div>
+                            </div>
+                            <div class="bg-blue-900/30 rounded-lg p-3 text-center border border-blue-400/15">
+                                <div class="text-xl font-bold text-cyan-300">328</div>
+                                <div class="text-xs text-blue-300/60 mt-0.5">覆盖企业</div>
+                            </div>
+                            <div class="bg-blue-900/30 rounded-lg p-3 text-center border border-blue-400/15">
+                                <div class="text-xl font-bold text-cyan-300">18</div>
+                                <div class="text-xs text-blue-300/60 mt-0.5">技术领域</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-cyan-400/80 pt-3 border-t border-blue-400/20">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            此数据集专属绑定，不支持更换（保障数据质量与场景准确性）
+                        </div>
+                    </div>
+                    <!-- 右侧：说明 -->
+                    <div class="flex flex-col justify-center gap-4">
+                        <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <span class="text-sm text-blue-200 font-medium">为什么固定数据集？</span>
+                            </div>
+                            <p class="text-xs text-blue-200/60 leading-relaxed">本场景针对新能源汽车专利数据进行结构化预处理，包含专属技术标签体系与产业链标引，不支持替换以确保分析结果准确性。</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-500/20 border border-blue-400/30 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-white font-medium">自动优选，无需配置</div>
+                                <div class="text-xs text-blue-200/50">系统已根据场景特点为您预选最优数据集</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 操作按钮 -->
+                <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                    <div class="text-xs text-blue-300/40">步骤 1 / 3 · 选择数据集</div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="nextStep()" class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium hover:opacity-90 transition-all text-sm flex items-center gap-2 shadow-lg shadow-blue-500/30">
+                            下一步
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤2：AI模型 -->
+            <div id="step2" class="hidden">
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <!-- 模型卡片 -->
+                    <div style="border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.1);" class="bg-white/8 backdrop-blur border border-purple-400/20 rounded-2xl p-6 relative">
+                        <div style="position:absolute;top:-10px;right:16px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px;">✦ 专属模型</div>
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white text-base mb-1">PatentGPT-Pro</h4>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="px-2 py-0.5 bg-purple-500/20 border border-purple-400/30 text-purple-300 text-xs rounded-full">专利领域微调</span>
+                                    <span class="px-2 py-0.5 bg-pink-500/20 border border-pink-400/30 text-pink-300 text-xs rounded-full">已绑定</span>
+                                </div>
+                                <p class="text-sm text-purple-200/80 leading-relaxed">基于大语言模型深度优化，专为专利数据分析场景微调，支持技术解读、侵权判断、竞争分析。</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="bg-purple-900/30 rounded-lg p-3 text-center border border-purple-400/15">
+                                <div class="text-base font-bold text-purple-200">技术标引</div>
+                                <div class="text-xs text-purple-300/60 mt-1">自动化专利技术分类</div>
+                            </div>
+                            <div class="bg-purple-900/30 rounded-lg p-3 text-center border border-purple-400/15">
+                                <div class="text-base font-bold text-purple-200">竞争分析</div>
+                                <div class="text-xs text-purple-300/60 mt-1">多维度企业对比</div>
+                            </div>
+                            <div class="bg-purple-900/30 rounded-lg p-3 text-center border border-purple-400/15">
+                                <div class="text-base font-bold text-purple-200">智能解读</div>
+                                <div class="text-xs text-purple-300/60 mt-1">专利说明书摘要</div>
+                            </div>
+                            <div class="bg-purple-900/30 rounded-lg p-3 text-center border border-purple-400/15">
+                                <div class="text-base font-bold text-purple-200">报告生成</div>
+                                <div class="text-xs text-purple-300/60 mt-1">一键输出分析报告</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-purple-300/80 pt-3 border-t border-purple-400/20">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            此模型专属优化，不支持更换（深度适配专利分析场景）
+                        </div>
+                    </div>
+                    <!-- 右侧说明 -->
+                    <div class="flex flex-col justify-center gap-4">
+                        <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <span class="text-sm text-purple-200 font-medium">为什么固定AI模型？</span>
+                            </div>
+                            <p class="text-xs text-purple-200/60 leading-relaxed">PatentGPT-Pro 经过专利语料专项微调，理解专利文献结构与术语，通用模型无法替代。此为场景最优解，无需自行选择。</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-purple-500/20 border border-purple-400/30 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-white font-medium">专属优化，即开即用</div>
+                                <div class="text-xs text-purple-200/50">无需调试，直接进入分析</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 操作按钮 -->
+                <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                    <div class="text-xs text-blue-300/40">步骤 2 / 3 · 选择AI模型</div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="prevStep()" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white/80 rounded-xl transition-all text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            上一步
+                        </button>
+                        <button onclick="nextStep()" class="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:opacity-90 transition-all text-sm flex items-center gap-2 shadow-lg shadow-purple-500/30">
+                            下一步
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤3：确认创建 -->
+            <div id="step3" class="hidden">
+                <div class="max-w-2xl mx-auto">
+                    <!-- 配置汇总 -->
+                    <div class="grid grid-cols-2 gap-5 mb-6">
+                        <div class="bg-white/8 backdrop-blur rounded-xl p-5 border border-blue-400/20 text-center">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-6 h-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            </div>
+                            <div class="text-xs text-blue-300/60 mb-1">数据集</div>
+                            <div class="text-sm font-semibold text-white">全球新能源汽车专利数据库</div>
+                        </div>
+                        <div class="bg-white/8 backdrop-blur rounded-xl p-5 border border-purple-400/20 text-center">
+                            <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-6 h-6 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                            </div>
+                            <div class="text-xs text-purple-300/60 mb-1">AI模型</div>
+                            <div class="text-sm font-semibold text-white">PatentGPT-Pro</div>
+                        </div>
+                    </div>
+                    <!-- 空间名称输入 -->
+                    <div class="mb-6">
+                        <label class="block text-sm text-blue-200 font-medium mb-2">空间名称 <span class="text-blue-300/40 font-normal">(可自定义)</span></label>
+                        <input type="text" id="spaceName" value="新能源汽车智能空间" placeholder="输入空间名称" class="w-full bg-white/10 border border-blue-400/30 text-white placeholder-blue-300/30 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-400 transition-colors">
+                    </div>
+                    <!-- 提示 -->
+                    <div class="bg-blue-900/20 border border-blue-400/20 rounded-xl p-4 mb-6 flex items-start gap-3">
+                        <svg class="w-4 h-4 text-blue-300 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="text-xs text-blue-200/70 leading-relaxed">数据集与模型已固定绑定，不可修改。创建后可随时调整空间名称、添加分析维度、生成报告。</p>
+                    </div>
+                </div>
+                <!-- 操作按钮 -->
+                <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                    <div class="text-xs text-blue-300/40">步骤 3 / 3 · 确认创建</div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="prevStep()" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white/80 rounded-xl transition-all text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            上一步
+                        </button>
+                        <button onclick="doCreate()" class="px-7 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:opacity-90 transition-all text-sm flex items-center gap-2 shadow-lg shadow-green-500/30">
+                            ✦ 立即创建
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 加载动画 -->
+            <div id="loadingStep" class="hidden">
+                <div class="flex flex-col items-center justify-center py-12 gap-5">
+                    <!-- 旋转圆环 -->
+                    <div style="position:relative;width:72px;height:72px;">
+                        <svg class="spin-anim" viewBox="0 0 72 72" style="width:72px;height:72px;transform:rotate(-90deg);">
+                            <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(59,130,246,0.15)" stroke-width="5"/>
+                            <circle cx="36" cy="36" r="30" fill="none" stroke="url(#spGrad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="47"/>
+                            <defs>
+                                <linearGradient id="spGrad" x1="0" y1="0" x2="72" y2="0">
+                                    <stop offset="0%" stop-color="#2563eb"/>
+                                    <stop offset="100%" stop-color="#06b6d4"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-white font-semibold text-lg mb-1">正在创建空间...</div>
+                        <div class="text-sm text-blue-300/60">数据集绑定中，约需 30 秒</div>
+                    </div>
+                    <!-- 进度条 -->
+                    <div style="width:320px;height:4px;background:rgba(59,130,246,0.15);border-radius:2px;overflow:hidden;">
+                        <div id="progressBar" style="height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#06b6d4);border-radius:2px;transition:width 0.3s;"></div>
+                    </div>
+                    <div class="text-xs text-blue-300/40" id="progressText">0%</div>
+                </div>
+            </div>
+
+            <!-- 成功状态 -->
+            <div id="successStep" class="hidden">
+                <div class="flex flex-col items-center justify-center py-12 gap-5">
+                    <!-- 成功图标 -->
+                    <div style="position:relative;width:80px;height:80px;">
+                        <svg viewBox="0 0 80 80" style="width:80px;height:80px;">
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(34,197,94,0.2)" stroke-width="4"/>
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="0" class="drawCircle"/>
+                            <path d="M26 40l10 10 18-18" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="40" stroke-dashoffset="0" class="check-stroke"/>
+                        </svg>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-white font-semibold text-xl mb-2">空间创建成功！</div>
+                        <div class="text-sm text-emerald-300/70 mb-1" id="successSpaceName">新能源汽车智能空间</div>
+                        <div class="text-xs text-emerald-300/40">即将跳转到工作台...</div>
+                    </div>
+                    <div class="text-xs text-blue-300/30 mt-2">页面将自动跳转，无需任何操作</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+    </div>
+</section>
+
+<!-- 核心数据 -->
+<section class="bg-white border-b border-gray-100 py-8">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-5 gap-0 divide-x divide-gray-100">
+            <div class="px-6 text-center">
+                <div class="text-3xl font-bold text-blue-600 mb-1">2,395</div>
+                <div class="text-sm text-gray-500">专利总量</div>
+            </div>
+            <div class="px-6 text-center">
+                <div class="text-3xl font-bold text-cyan-600 mb-1">328</div>
+                <div class="text-sm text-gray-500">重点企业</div>
+            </div>
+            <div class="px-6 text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-1">18</div>
+                <div class="text-sm text-gray-500">核心技术领域</div>
+            </div>
+            <div class="px-6 text-center">
+                <div class="text-3xl font-bold text-green-600 mb-1">96%</div>
+                <div class="text-sm text-gray-500">数据覆盖率</div>
+            </div>
+            <div class="px-6 text-center">
+                <div class="text-3xl font-bold text-orange-500 mb-1">实时</div>
+                <div class="text-sm text-gray-500">数据更新</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 主体内容 -->
+<div class="max-w-7xl mx-auto px-6 py-14">
+    <div class="grid grid-cols-3 gap-8">
+        <!-- 左侧主内容 col-span-2 -->
+        <div class="col-span-2 space-y-10">
+
+            <!-- 场景介绍 -->
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <div class="w-1 h-6 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                    场景介绍
+                </h2>
+                <div class="grid grid-cols-2 gap-5">
+                    <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-100 card-hover">
+                        <div class="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">竞争格局分析</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed">追踪比亚迪、宁德时代、特斯拉等全球龙头企业专利布局，洞察技术竞争态势。</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100 card-hover">
+                        <div class="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">技术热点发现</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed">AI自动识别电池技术、智能驾驶、充电技术等18个核心领域的最新突破方向。</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100 card-hover">
+                        <div class="w-11 h-11 rounded-xl bg-green-100 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">产业链图谱</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed">覆盖整车、动力电池、电机、电控等全产业链关键环节，构建完整知识图谱。</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-6 border border-orange-100 card-hover">
+                        <div class="w-11 h-11 rounded-xl bg-orange-100 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">智能报告生成</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed">一键输出专利分析报告，自动生成技术路线图、竞争对手对比、风险预警等内容。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据覆盖 -->
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <div class="w-1 h-6 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                    数据覆盖范围
+                </h2>
+                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+                    <div class="grid grid-cols-3">
+                        <div class="p-6 border-r border-b border-gray-100">
+                            <div class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">动力电池</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0"></span>固态电池技术</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0"></span>BMS管理系统</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0"></span>热管理方案</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-400"><span class="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0"></span>+12 项</div>
+                            </div>
+                        </div>
+                        <div class="p-6 border-r border-b border-gray-100">
+                            <div class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">智能驾驶</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-cyan-500 flex-shrink-0"></span>感知算法</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-cyan-500 flex-shrink-0"></span>决策规划</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-cyan-500 flex-shrink-0"></span>车路协同</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-400"><span class="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0"></span>+9 项</div>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b border-gray-100">
+                            <div class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">充电技术</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-purple-500 flex-shrink-0"></span>超充桩技术</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-purple-500 flex-shrink-0"></span>无线充电</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-purple-500 flex-shrink-0"></span>V2G技术</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-400"><span class="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0"></span>+7 项</div>
+                            </div>
+                        </div>
+                        <div class="p-6 border-r border-gray-100">
+                            <div class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">整车设计</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>轻量化结构</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>底盘电控</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>NVH优化</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-400"><span class="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0"></span>+8 项</div>
+                            </div>
+                        </div>
+                        <div class="p-6 border-r border-gray-100">
+                            <div class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">电驱系统</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>永磁电机</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>电控逆变</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>减速箱设计</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-400"><span class="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0"></span>+6 项</div>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">智能座舱</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-pink-500 flex-shrink-0"></span>人机交互</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-pink-500 flex-shrink-0"></span>车载大模型</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-700"><span class="w-1.5 h-1.5 rounded-full bg-pink-500 flex-shrink-0"></span>AR-HUD</div>
+                                <div class="flex items-center gap-2 text-sm text-gray-400"><span class="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0"></span>+5 项</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 适用对象 -->
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <div class="w-1 h-6 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                    适用对象
+                </h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-2xl">🏭</div>
+                        <div><div class="font-medium text-gray-800 text-sm">整车制造商</div><div class="text-xs text-gray-500">技术研发部门</div></div>
+                    </div>
+                    <div class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-2xl">🔋</div>
+                        <div><div class="font-medium text-gray-800 text-sm">零部件供应商</div><div class="text-xs text-gray-500">电池/电机厂商</div></div>
+                    </div>
+                    <div class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-2xl">🏛️</div>
+                        <div><div class="font-medium text-gray-800 text-sm">科研院所</div><div class="text-xs text-gray-500">行业研究机构</div></div>
+                    </div>
+                    <div class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-2xl">⚖️</div>
+                        <div><div class="font-medium text-gray-800 text-sm">知识产权机构</div><div class="text-xs text-gray-500">专利代理/律所</div></div>
+                    </div>
+                    <div class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-2xl">📊</div>
+                        <div><div class="font-medium text-gray-800 text-sm">投资分析机构</div><div class="text-xs text-gray-500">PE/VC/券商</div></div>
+                    </div>
+                    <div class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-2xl">🏢</div>
+                        <div><div class="font-medium text-gray-800 text-sm">政府部门</div><div class="text-xs text-gray-500">产业政策制定</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧侧边栏 -->
+        <div class="space-y-6">
+            <!-- 空间配置 -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-4">空间预设配置</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="text-xs text-gray-400 mb-2 uppercase tracking-wide">数据集</div>
+                        <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                            <div class="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">📋</div>
+                            <div>
+                                <div class="font-medium text-gray-800 text-sm">全球新能源汽车专利数据库</div>
+                                <div class="text-xs text-gray-400">2,395 条 · 实时更新</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-400 mb-2 uppercase tracking-wide">AI 模型</div>
+                        <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-xl border border-purple-100">
+                            <div class="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">🤖</div>
+                            <div>
+                                <div class="font-medium text-gray-800 text-sm">PatentGPT-Pro</div>
+                                <div class="text-xs text-gray-400">专利领域深度优化版</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 相关统计 -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-4">近期使用数据</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">本月新增空间</span>
+                        <span class="text-sm font-semibold text-blue-600">+47</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">平均分析深度</span>
+                        <span class="text-sm font-semibold text-gray-800">18 维度</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">用户满意度</span>
+                        <span class="text-sm font-semibold text-green-600">98.2%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">平均响应时间</span>
+                        <span class="text-sm font-semibold text-gray-800">6.8s</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== 创建流程弹窗 ========== -->
+<script>
+    let currentStep = 1;
+
+    function openCreateFlow() {
+        const panel = document.getElementById('createPanel');
+        panel.classList.add('open');
+        updateStep(1);
+        setTimeout(() => {
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+    }
+
+    function closeCreateFlow() {
+        const panel = document.getElementById('createPanel');
+        panel.classList.remove('open');
+        setTimeout(() => {
+            updateStep(1);
+            ['step1','step2','step3'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('loadingStep').classList.add('hidden');
+            document.getElementById('successStep').classList.add('hidden');
+        }, 300);
+    }
+
+    function updateStepUI(step) {
+        const dotIds = ['dot1','dot2','dot3'];
+        dotIds.forEach((id, i) => {
+            const el = document.getElementById(id);
+            el.className = 'inline-dot';
+            if (i + 1 < step) el.classList.add('done');
+            else if (i + 1 === step) el.classList.add('active');
+            else el.classList.add('todo');
+        });
+        document.getElementById('conn1').className = 'inline-conn' + (step > 1 ? ' done' : '');
+        document.getElementById('conn2').className = 'inline-conn' + (step > 2 ? ' done' : '');
+        const labelIds = ['label1','label2','label3'];
+        labelIds.forEach((id, i) => {
+            const el = document.getElementById(id);
+            el.style.color = (i + 1 === step) ? '#93c5fd' : '#64748b';
+            el.style.fontWeight = (i + 1 === step) ? '600' : '400';
+        });
+    }
+
+    function updateStep(step) {
+        currentStep = step;
+        document.getElementById('step1').classList.toggle('hidden', step !== 1);
+        document.getElementById('step2').classList.toggle('hidden', step !== 2);
+        document.getElementById('step3').classList.toggle('hidden', step !== 3);
+        document.getElementById('loadingStep').classList.add('hidden');
+        document.getElementById('successStep').classList.add('hidden');
+        updateStepUI(step);
+    }
+
+    function nextStep() {
+        if (currentStep < 3) {
+            updateStep(currentStep + 1);
+            setTimeout(() => {
+                document.getElementById('createPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            updateStep(currentStep - 1);
+            setTimeout(() => {
+                document.getElementById('createPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+        }
+    }
+
+    function doCreate() {
+        const name = document.getElementById('spaceName').value || '新能源汽车智能空间';
+        ['step1','step2','step3'].forEach(id => document.getElementById(id).classList.add('hidden'));
+        document.getElementById('loadingStep').classList.remove('hidden');
+        document.getElementById('progressBar').style.width = '0%';
+        document.getElementById('progressText').textContent = '0%';
+
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 18 + 5;
+            if (progress >= 95) { progress = 95; clearInterval(interval); }
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = Math.round(progress) + '%';
+        }, 200);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressText').textContent = '100%';
+            document.getElementById('successSpaceName').textContent = name;
+            setTimeout(() => {
+                document.getElementById('loadingStep').classList.add('hidden');
+                document.getElementById('successStep').classList.remove('hidden');
+                setTimeout(() => { window.location.href = 'space-nev-detail.html'; }, 1800);
+            }, 400);
+        }, 2500);
+    }
+</script>
+
+</html>

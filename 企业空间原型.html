@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业空间 - 智能空间</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
+        .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .anim-fade { animation: fadeIn 0.3s ease-out; }
+        .anim-slide { animation: slideIn 0.4s ease-out; }
+        .nav-item { transition: all 0.2s ease; }
+        .nav-item:hover { background: #f3f4f6; }
+        .nav-item.active { background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(220,38,38,0.12)); color: #f97316; border-right: 3px solid #f97316; }
+        .tab-btn { transition: all 0.2s ease; }
+        .tab-btn.active { color: #f97316; border-bottom: 2px solid #f97316; }
+        .role-badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+        .role-admin { background: #fef3c7; color: #d97706; }
+        .role-editor { background: #dbeafe; color: #2563eb; }
+        .role-viewer { background: #f3f4f6; color: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- 左侧导航栏 -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+            <!-- Logo -->
+            <div class="p-5 border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-gray-800 text-lg">企业空间</h1>
+                        <p class="text-xs text-gray-500">Enterprise Space</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 导航菜单 -->
+            <nav class="flex-1 p-3 space-y-1">
+                <a href="#" class="nav-item active flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700" onclick="showView('home')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">企业概览</span>
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700" onclick="showView('spaces')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"/>
+                    </svg>
+                    <span>企业空间</span>
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700" onclick="showView('members')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <span>成员管理</span>
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700" onclick="showView('permissions')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <span>权限设置</span>
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700" onclick="showView('datasets')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                    </svg>
+                    <span>共享数据</span>
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700" onclick="showView('audit')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                    </svg>
+                    <span>操作日志</span>
+                </a>
+            </nav>
+            
+            <!-- 返回首页 -->
+            <div class="p-4 border-t border-gray-100">
+                <a href="智能空间首页.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                    </svg>
+                    <span class="text-sm">返回首页</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- 主内容区 -->
+        <main class="flex-1 flex flex-col">
+            <!-- 顶部搜索栏 -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="text-sm text-gray-500">
+                            <span class="font-medium text-gray-700">智慧科技有限公司</span>
+                            <span class="mx-2">/</span>
+                            <span>企业空间</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            创建空间
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- 内容区域 -->
+            <div class="flex-1 overflow-auto scrollbar-thin p-6" id="mainContent">
+                
+                <!-- ======================== 企业概览 ======================== -->
+                <div id="homeView">
+                    <!-- 欢迎区域 -->
+                    <div class="mb-8 anim-slide">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">企业控制台 👋</h1>
+                        <p class="text-gray-500">统一管理企业数据资产，配置成员权限，追踪使用情况</p>
+                    </div>
+                    
+                    <!-- 统计卡片 -->
+                    <div class="grid grid-cols-4 gap-5 mb-8">
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-green-500 bg-green-50 px-2 py-1 rounded-full">+2</span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800">5</h3>
+                            <p class="text-gray-500 text-sm mt-1">企业空间</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-green-500 bg-green-50 px-2 py-1 rounded-full">+3</span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800">28</h3>
+                            <p class="text-gray-500 text-sm mt-1">团队成员</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-green-500 bg-green-50 px-2 py-1 rounded-full">+5</span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800">12</h3>
+                            <p class="text-gray-500 text-sm mt-1">共享数据集</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800">156</h3>
+                            <p class="text-gray-500 text-sm mt-1">本月查询次数</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 企业空间列表 -->
+                    <div class="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-800">企业空间概览</h2>
+                            <button class="text-orange-600 text-sm font-medium hover:text-orange-700">查看全部 →</button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="border border-gray-100 rounded-xl p-4 hover:border-orange-200 hover:shadow-md transition-all cursor-pointer">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                        <span class="text-white font-bold text-sm">专</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800 text-sm">专利分析空间</h3>
+                                        <p class="text-xs text-gray-400">5 人使用</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 text-xs text-gray-500">
+                                    <span class="flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                        运行中
+                                    </span>
+                                    <span>2,847 条</span>
+                                </div>
+                            </div>
+                            <div class="border border-gray-100 rounded-xl p-4 hover:border-orange-200 hover:shadow-md transition-all cursor-pointer">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                        <span class="text-white font-bold text-sm">商</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800 text-sm">商标监测空间</h3>
+                                        <p class="text-xs text-gray-400">3 人使用</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 text-xs text-gray-500">
+                                    <span class="flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                        运行中
+                                    </span>
+                                    <span>5,234 条</span>
+                                </div>
+                            </div>
+                            <div class="border border-gray-100 rounded-xl p-4 hover:border-orange-200 hover:shadow-md transition-all cursor-pointer">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                        <span class="text-white font-bold text-sm">法</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800 text-sm">法律文书空间</h3>
+                                        <p class="text-xs text-gray-400">2 人使用</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 text-xs text-gray-500">
+                                    <span class="flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                                        待激活
+                                    </span>
+                                    <span>892 条</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 活跃成员 -->
+                    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-800">活跃成员</h2>
+                            <button onclick="showView('members')" class="text-orange-600 text-sm font-medium hover:text-orange-700">管理成员 →</button>
+                        </div>
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-semibold">张</div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">张明远</p>
+                                    <p class="text-xs text-gray-400">管理员</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-semibold">李</div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">李思涵</p>
+                                    <p class="text-xs text-gray-400">分析师</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-semibold">王</div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">王雨晴</p>
+                                    <p class="text-xs text-gray-400">数据专员</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-semibold">陈</div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">陈伟</p>
+                                    <p class="text-xs text-gray-400">访客</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ======================== 企业空间 ======================== -->
+                <div id="spacesView" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">企业空间</h1>
+                        <button class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            创建空间
+                        </button>
+                    </div>
+                    
+                    <!-- 筛选标签 -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <button class="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium">全部 (5)</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">运行中 (3)</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">已暂停 (1)</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">待激活 (1)</button>
+                    </div>
+                    
+                    <!-- 空间列表 -->
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-2xl border border-gray-100 p-5 card-hover cursor-pointer">
+                            <div class="flex items-center gap-5">
+                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white font-bold text-lg">专</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-1">
+                                        <h3 class="font-semibold text-gray-800">专利分析空间</h3>
+                                        <span class="px-2.5 py-1 bg-green-50 text-green-600 text-xs font-medium rounded-full">运行中</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mb-2">全球专利数据分析与竞争对手监测</p>
+                                    <div class="flex items-center gap-5 text-xs text-gray-400">
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292"/>
+                                            </svg>
+                                            5 名成员
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/>
+                                            </svg>
+                                            2,847 条数据
+                                        </span>
+                                        <span>创建于 2024-01-15</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                                        空间管理
+                                    </button>
+                                    <button class="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-gray-100 p-5 card-hover cursor-pointer">
+                            <div class="flex items-center gap-5">
+                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white font-bold text-lg">商</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-1">
+                                        <h3 class="font-semibold text-gray-800">商标监测空间</h3>
+                                        <span class="px-2.5 py-1 bg-green-50 text-green-600 text-xs font-medium rounded-full">运行中</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mb-2">商标注册监测与风险预警</p>
+                                    <div class="flex items-center gap-5 text-xs text-gray-400">
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292"/>
+                                            </svg>
+                                            3 名成员
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/>
+                                            </svg>
+                                            5,234 条数据
+                                        </span>
+                                        <span>创建于 2024-02-20</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                                        空间管理
+                                    </button>
+                                    <button class="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ======================== 成员管理 ======================== -->
+                <div id="membersView" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800">成员管理</h1>
+                            <p class="text-gray-500 text-sm mt-1">管理企业空间成员及角色权限</p>
+                        </div>
+                        <button class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                            </svg>
+                            邀请成员
+                        </button>
+                    </div>
+                    
+                    <!-- 角色筛选 -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <button class="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium">全部 (28)</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">管理员 (3)</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">分析师 (12)</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">数据专员 (8)</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">访客 (5)</button>
+                    </div>
+                    
+                    <!-- 成员列表 -->
+                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 border-b border-gray-100">
+                                <tr>
+                                    <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">成员</th>
+                                    <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">角色</th>
+                                    <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">所属部门</th>
+                                    <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">加入时间</th>
+                                    <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">最近活跃</th>
+                                    <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-semibold text-sm">张</div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-800">张明远</p>
+                                                <p class="text-xs text-gray-400">zhangmy@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4"><span class="role-badge role-admin">管理员</span></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">技术研发部</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">2024-01-01</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">今天</td>
+                                    <td class="px-6 py-4">
+                                        <button class="text-gray-400 hover:text-gray-600 text-sm">编辑</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm">李</div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-800">李思涵</p>
+                                                <p class="text-xs text-gray-400">lish@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4"><span class="role-badge role-editor">分析师</span></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">数据分析部</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">2024-01-15</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">今天</td>
+                                    <td class="px-6 py-4">
+                                        <button class="text-gray-400 hover:text-gray-600 text-sm">编辑</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-semibold text-sm">王</div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-800">王雨晴</p>
+                                                <p class="text-xs text-gray-400">wangyq@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4"><span class="role-badge role-editor">数据专员</span></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">知识产权部</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">2024-02-01</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">昨天</td>
+                                    <td class="px-6 py-4">
+                                        <button class="text-gray-400 hover:text-gray-600 text-sm">编辑</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm">陈</div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-800">陈伟</p>
+                                                <p class="text-xs text-gray-400">chenw@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4"><span class="role-badge role-viewer">访客</span></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">外部合作</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">2024-03-01</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">3天前</td>
+                                    <td class="px-6 py-4">
+                                        <button class="text-gray-400 hover:text-gray-600 text-sm">编辑</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- ======================== 权限设置 ======================== -->
+                <div id="permissionsView" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800">权限设置</h1>
+                            <p class="text-gray-500 text-sm mt-1">配置企业角色权限，规范数据访问</p>
+                        </div>
+                        <button class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            添加角色
+                        </button>
+                    </div>
+                    
+                    <!-- 角色列表 -->
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <!-- 管理员 -->
+                        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">管理员</h3>
+                                    <p class="text-xs text-gray-400">3 名成员</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">创建/删除空间</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">管理成员</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">配置权限</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">数据管理</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2">
+                                    <span class="text-sm text-gray-600">查看分析报告</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 分析师 -->
+                        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">分析师</h3>
+                                    <p class="text-xs text-gray-400">12 名成员</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">创建/删除空间</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">管理成员</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">配置权限</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">数据管理</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2">
+                                    <span class="text-sm text-gray-600">查看分析报告</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 数据专员 -->
+                        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">数据专员</h3>
+                                    <p class="text-xs text-gray-400">8 名成员</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">创建/删除空间</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">管理成员</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">配置权限</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">数据管理</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2">
+                                    <span class="text-sm text-gray-600">查看分析报告</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 访客 -->
+                        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">访客</h3>
+                                    <p class="text-xs text-gray-400">5 名成员</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">创建/删除空间</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">管理成员</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">配置权限</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-50">
+                                    <span class="text-sm text-gray-600">数据管理</span>
+                                    <span class="text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between py-2">
+                                    <span class="text-sm text-gray-600">查看分析报告</span>
+                                    <span class="text-green-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ======================== 共享数据 ======================== -->
+                <div id="datasetsView" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800">共享数据</h1>
+                            <p class="text-gray-500 text-sm mt-1">企业内共享的数据集，统一管理权限</p>
+                        </div>
+                        <button class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            上传数据集
+                        </button>
+                    </div>
+                    
+                    <!-- 数据集列表 -->
+                    <div class="grid grid-cols-3 gap-5">
+                        <div class="bg-white rounded-2xl border border-gray-100 p-5 card-hover">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">中国专利数据库</h3>
+                                    <p class="text-xs text-gray-400">管理员共享</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 mb-4">
+                                <span>2,847 条</span>
+                                <span>12 个空间使用</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-50">
+                                <span class="text-xs text-gray-400">更新于 2024-03-15</span>
+                                <button class="text-orange-600 text-xs font-medium hover:text-orange-700">管理</button>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-gray-100 p-5 card-hover">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">全球商标数据库</h3>
+                                    <p class="text-xs text-gray-400">管理员共享</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 mb-4">
+                                <span>5,234 条</span>
+                                <span>8 个空间使用</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-50">
+                                <span class="text-xs text-gray-400">更新于 2024-03-10</span>
+                                <button class="text-orange-600 text-xs font-medium hover:text-orange-700">管理</button>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-gray-100 p-5 card-hover">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">法律文书库</h3>
+                                    <p class="text-xs text-gray-400">分析师共享</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 mb-4">
+                                <span>892 条</span>
+                                <span>3 个空间使用</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-50">
+                                <span class="text-xs text-gray-400">更新于 2024-03-05</span>
+                                <button class="text-orange-600 text-xs font-medium hover:text-orange-700">管理</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ======================== 操作日志 ======================== -->
+                <div id="auditView" class="hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">操作日志</h1>
+                        <p class="text-gray-500 text-sm mt-1">记录所有成员的操作行为，便于审计追踪</p>
+                    </div>
+                    
+                    <!-- 筛选 -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <button class="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium">全部</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">数据操作</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">权限变更</button>
+                        <button class="px-4 py-2 bg-white text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 border border-gray-200">空间管理</button>
+                    </div>
+                    
+                    <!-- 日志列表 -->
+                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                        <div class="divide-y divide-gray-50">
+                            <div class="px-6 py-4 flex items-center gap-4 hover:bg-gray-50">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">张</div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-800"><span class="font-medium">张明远</span> 将 <span class="font-medium">王雨晴</span> 的角色从 <span class="text-blue-600">数据专员</span> 修改为 <span class="text-blue-600">分析师</span></p>
+                                    <p class="text-xs text-gray-400 mt-1">权限设置 > 成员管理</p>
+                                </div>
+                                <span class="text-xs text-gray-400 flex-shrink-0">今天 14:32</span>
+                            </div>
+                            <div class="px-6 py-4 flex items-center gap-4 hover:bg-gray-50">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">李</div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-800"><span class="font-medium">李思涵</span> 上传了数据集 <span class="font-medium text-orange-600">《2024年Q1专利分析报告》</span></p>
+                                    <p class="text-xs text-gray-400 mt-1">共享数据 > 上传</p>
+                                </div>
+                                <span class="text-xs text-gray-400 flex-shrink-0">今天 11:20</span>
+                            </div>
+                            <div class="px-6 py-4 flex items-center gap-4 hover:bg-gray-50">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">王</div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-800"><span class="font-medium">王雨晴</span> 创建了空间 <span class="font-medium text-orange-600">「法律文书空间」</span></p>
+                                    <p class="text-xs text-gray-400 mt-1">企业空间 > 创建</p>
+                                </div>
+                                <span class="text-xs text-gray-400 flex-shrink-0">昨天 16:45</span>
+                            </div>
+                            <div class="px-6 py-4 flex items-center gap-4 hover:bg-gray-50">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">陈</div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-800"><span class="font-medium">陈伟</span> 申请加入空间 <span class="font-medium text-orange-600">「专利分析空间」</span></p>
+                                    <p class="text-xs text-gray-400 mt-1">企业空间 > 申请加入</p>
+                                </div>
+                                <span class="text-xs text-gray-400 flex-shrink-0">3天前 09:15</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        function showView(viewName) {
+            // 隐藏所有视图
+            const views = ['homeView', 'spacesView', 'membersView', 'permissionsView', 'datasetsView', 'auditView'];
+            views.forEach(view => {
+                document.getElementById(view).classList.add('hidden');
+            });
+            
+            // 显示目标视图
+            const targetView = viewName + 'View';
+            document.getElementById(targetView).classList.remove('hidden');
+            document.getElementById(targetView).classList.add('anim-fade');
+            
+            // 更新导航激活状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+        }
+    </script>
+</body>
+</html>
