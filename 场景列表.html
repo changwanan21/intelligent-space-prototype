@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的场景 - 智能空间</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .card-hover{transition:all 0.3s ease}
+        .card-hover:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.08)}
+        .tab-btn{transition:all 0.2s ease}
+        .tab-btn.active{color:#6366f1;border-bottom:2px solid #6366f1}
+        .nav-item{transition:all 0.2s ease}
+        .nav-item:hover{background:#f3f4f6}
+        .nav-item.active{background:linear-gradient(135deg,#6366f120,#8b5cf620);color:#6366f1;border-right:3px solid #6366f1}
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- 左侧导航栏 -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+            <!-- Logo -->
+            <div class="p-5 border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-gray-800 text-lg">智能空间</h1>
+                        <p class="text-xs text-gray-500">Intelligent Space</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 导航菜单 -->
+            <nav class="flex-1 p-3 space-y-1">
+                <a href="智能空间原型.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">首页概览</span>
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"/>
+                    </svg>
+                    <span>我的空间</span>
+                </a>
+                <a href="场景列表.html" class="nav-item active flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                    </svg>
+                    <span>我的场景</span>
+                </a>
+                <a href="我的数据.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                    </svg>
+                    <span>我的数据</span>
+                </a>
+                <a href="我的模型.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span>我的模型</span>
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <span>智能分析</span>
+                </a>
+            </nav>
+            
+            <!-- 用户信息 -->
+            <div class="p-4 border-t border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">A</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-800 truncate">An Changwan</p>
+                        <p class="text-xs text-gray-500">专业版</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- 主内容区 -->
+        <main class="flex-1 flex flex-col">
+            <!-- 顶部搜索栏 -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4 flex-1 max-w-2xl">
+                        <div class="relative flex-1">
+                            <input type="text" placeholder="搜索场景..." class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100 transition-all">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="window.location.href='智能空间原型.html'" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            创建新场景
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 页面头部 -->
+            <div class="bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white px-6 py-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold mb-1">我的场景</h1>
+                        <p class="text-purple-200 text-sm">管理和使用您已创建的分析场景，快速进入工作</p>
+                    </div>
+                </div>
+                <!-- 统计 -->
+                <div class="flex items-center gap-8 mt-4 text-sm text-purple-200">
+                    <span class="flex items-center gap-1"><span class="text-white font-bold">6</span> 个场景</span>
+                    <span>·</span>
+                    <span class="flex items-center gap-1"><span class="text-white font-bold">3</span> 运行中</span>
+                    <span>·</span>
+                    <span class="flex items-center gap-1"><span class="text-white font-bold">2</span> 已暂停</span>
+                </div>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div class="bg-white border-b border-gray-100 px-6 py-3">
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-500">状态:</span>
+                    <button class="px-4 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium">全部 (6)</button>
+                    <button class="px-4 py-1.5 bg-gray-100 text-gray-600 hover:bg-purple-50 hover:text-purple-600 rounded-lg text-sm font-medium transition-colors">运行中 (3)</button>
+                    <button class="px-4 py-1.5 bg-gray-100 text-gray-600 hover:bg-purple-50 hover:text-purple-600 rounded-lg text-sm font-medium transition-colors">已暂停 (2)</button>
+                    <button class="px-4 py-1.5 bg-gray-100 text-gray-600 hover:bg-purple-50 hover:text-purple-600 rounded-lg text-sm font-medium transition-colors">草稿 (1)</button>
+                </div>
+            </div>
+
+            <!-- 场景卡片网格 -->
+            <div class="flex-1 p-6 bg-gray-50">
+                <div class="grid grid-cols-3 gap-6">
+
+                    <!-- 卡片1: 新能源汽车 -->
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='场景详情.html?id=nev'">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#10b98122,#34d39933)">🚗</div>
+                            <span class="px-2.5 py-1 bg-green-50 text-green-600 text-xs font-medium rounded-full">运行中</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-1">新能源汽车专利分析</h3>
+                        <p class="text-xs text-gray-400 mb-1">场景</p>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">分析全球新能源汽车领域专利技术分布与竞争态势</p>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded">全球专利</span>
+                            <span class="px-2 py-0.5 bg-green-50 text-green-600 text-xs rounded">三电技术</span>
+                            <span class="px-2 py-0.5 bg-orange-50 text-orange-600 text-xs rounded">竞争分析</span>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                                12.8万条
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                GPT-4
+                            </span>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs text-gray-400">创建于 2024-03-01</span>
+                            <span class="text-purple-600 text-sm font-medium hover:text-purple-700">进入 →</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片2: 股票市场 -->
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='场景详情.html?id=stock'">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#3b82f622,#60a5fa33)">📈</div>
+                            <span class="px-2.5 py-1 bg-green-50 text-green-600 text-xs font-medium rounded-full">运行中</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-1">股票市场分析</h3>
+                        <p class="text-xs text-gray-400 mb-1">场景</p>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">A股市场实时数据与趋势分析，辅助投资决策</p>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded">A股行情</span>
+                            <span class="px-2 py-0.5 bg-purple-50 text-purple-600 text-xs rounded">技术分析</span>
+                            <span class="px-2 py-0.5 bg-red-50 text-red-600 text-xs rounded">实时监控</span>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                                2,847条
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                Claude-3
+                            </span>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs text-gray-400">创建于 2024-03-15</span>
+                            <span class="text-purple-600 text-sm font-medium hover:text-purple-700">进入 →</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片3: 用户画像 -->
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='场景详情.html?id=user'">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#ec489922,#f472b633)">👤</div>
+                            <span class="px-2.5 py-1 bg-green-50 text-green-600 text-xs font-medium rounded-full">运行中</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-1">用户画像分析</h3>
+                        <p class="text-xs text-gray-400 mb-1">场景</p>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">客户消费行为深度洞察，支撑精准营销策略</p>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="px-2 py-0.5 bg-pink-50 text-pink-600 text-xs rounded">用户行为</span>
+                            <span class="px-2 py-0.5 bg-orange-50 text-orange-600 text-xs rounded">精准营销</span>
+                            <span class="px-2 py-0.5 bg-yellow-50 text-yellow-600 text-xs rounded">RFM模型</span>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                                12,580条
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                GPT-4
+                            </span>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs text-gray-400">创建于 2024-03-10</span>
+                            <span class="text-purple-600 text-sm font-medium hover:text-purple-700">进入 →</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片4: 供应链 -->
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='场景详情.html?id=supply'">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#f59e0b22,#fbbf2433)">🔗</div>
+                            <span class="px-2.5 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded-full">已暂停</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-1">供应链优化</h3>
+                        <p class="text-xs text-gray-400 mb-1">场景</p>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">库存与物流智能调度分析，降低运营成本</p>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="px-2 py-0.5 bg-amber-50 text-amber-600 text-xs rounded">物流调度</span>
+                            <span class="px-2 py-0.5 bg-teal-50 text-teal-600 text-xs rounded">库存优化</span>
+                            <span class="px-2 py-0.5 bg-cyan-50 text-cyan-600 text-xs rounded">成本分析</span>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                                5,234条
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                Llama-3
+                            </span>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs text-gray-400">创建于 2024-03-05</span>
+                            <span class="text-purple-600 text-sm font-medium hover:text-purple-700">进入 →</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片5: 医疗影像 -->
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='场景详情.html?id=medical'">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#ef444422,#fca5a533)">🏥</div>
+                            <span class="px-2.5 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded-full">已暂停</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-1">医疗影像AI辅助</h3>
+                        <p class="text-xs text-gray-400 mb-1">场景</p>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">CT/MRI影像智能分析，辅助医生提升诊断效率</p>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="px-2 py-0.5 bg-red-50 text-red-600 text-xs rounded">影像分析</span>
+                            <span class="px-2 py-0.5 bg-rose-50 text-rose-600 text-xs rounded">AI诊断</span>
+                            <span class="px-2 py-0.5 bg-violet-50 text-violet-600 text-xs rounded">多模态</span>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                                8,200条
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                GPT-4V
+                            </span>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs text-gray-400">创建于 2024-02-20</span>
+                            <span class="text-purple-600 text-sm font-medium hover:text-purple-700">进入 →</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片6: 行业分析 -->
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='场景详情.html?id=industry'">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#8b5cf622,#a78bfa33)">🏭</div>
+                            <span class="px-2.5 py-1 bg-amber-50 text-amber-600 text-xs font-medium rounded-full">草稿</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-1">半导体行业分析</h3>
+                        <p class="text-xs text-gray-400 mb-1">场景</p>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">半导体产业链技术布局与竞争格局全景分析</p>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded">产业链</span>
+                            <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded">技术追踪</span>
+                            <span class="px-2 py-0.5 bg-slate-50 text-slate-600 text-xs rounded">卡脖子</span>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                                待配置
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                待选择
+                            </span>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs text-gray-400">创建于 2024-03-18</span>
+                            <span class="text-purple-600 text-sm font-medium hover:text-purple-700">编辑 →</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

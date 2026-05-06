@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据集市 - 智能空间</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .card-hover{transition:all 0.3s ease}
+        .card-hover:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.08)}
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    </div>
+                    <a href="智能空间首页.html" class="font-bold text-gray-800">智能空间</a>
+                </div>
+                <div class="flex items-center gap-8">
+                    <a href="智能空间首页.html" class="text-gray-600 hover:text-blue-600 font-medium text-sm">首页</a>
+                    <a href="模型集市.html" class="text-gray-600 hover:text-blue-600 font-medium text-sm">模型集市</a>
+                    <a href="数据集市.html" class="text-blue-600 font-medium text-sm border-b-2 border-blue-600 pb-5 pt-5">数据集市</a>
+                    <a href="智能空间原型.html" class="text-gray-600 hover:text-blue-600 font-medium text-sm">智能空间</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="智能空间原型.html" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:opacity-90">进入工作台</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <div class="bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center gap-3 mb-3">
+                <a href="智能空间首页.html" class="text-emerald-300 hover:text-white text-sm">← 返回首页</a>
+            </div>
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold mb-1">数据集市</h1>
+                    <p class="text-emerald-200">高质量结构化数据，即选即用，快速构建分析能力</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6 mt-8 text-sm text-emerald-200">
+                <span>9 个数据集</span>
+                <span>·</span>
+                <span>覆盖专利、商标、金融等领域</span>
+                <span>·</span>
+                <span>持续更新，数据质量有保障</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 筛选栏 -->
+    <div class="bg-white border-b border-gray-100 sticky top-16 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-3">
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500 mr-2">分类:</span>
+                <button class="px-4 py-1.5 bg-green-500 text-white rounded-full text-sm font-medium">全部</button>
+                <button class="px-4 py-1.5 bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600 rounded-full text-sm font-medium transition-colors">专利</button>
+                <button class="px-4 py-1.5 bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600 rounded-full text-sm font-medium transition-colors">商标</button>
+                <button class="px-4 py-1.5 bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600 rounded-full text-sm font-medium transition-colors">金融</button>
+                <button class="px-4 py-1.5 bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600 rounded-full text-sm font-medium transition-colors">综合</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据集卡片网格 -->
+    <div class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-3 gap-6">
+
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=patent'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#6366f122,#8b5cf633)">
+                            📋
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">专利</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">全球专利数据库</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">覆盖全球180+国家/地区的专利文献，支持多维度检索</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            1.5亿+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            每日更新
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 7个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=trademark'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#f59e0b22,#ef444433)">
+                            🏷️
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">商标</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">全球商标数据库</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">覆盖全球主要市场商标注册信息，支持图形检索</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            5,000万+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            每周更新
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 7个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=stock'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#10b98122,#06b6d433)">
+                            📈
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">股票</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">A股实时行情</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">沪深全市场股票实时行情与历史K线数据</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            12,000+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            实时
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 7个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=financial'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#ec489922,#f43f5e33)">
+                            📊
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">财务</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">财务报表数据库</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">A股上市公司完整财务报表，含季报、半年报、年报</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            50,000+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            定期披露
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 7个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=industry'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#f9731622,#fb923c33)">
+                            🏭
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">行业</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">行业板块数据</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">申万行业分类及行业板块涨跌、资金流向数据</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            500+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            每日更新
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 6个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=chip'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#14b8a622,#2dd4bf33)">
+                            💾
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">专利</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">半导体芯片专利</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">集成电路、半导体制造工艺专利专题库</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            850万+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            每月更新
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 6个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=nev'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#22c55e22,#4ade8033)">
+                            ⚡
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">专利</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">新能源汽车专利</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">新能源汽车核心技术专题专利库</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            320万+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            每月更新
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 6个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=globalip'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#3b82f622,#6366f133)">
+                            🌐
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">综合</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">全球IP综合数据</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">整合全球专利、商标、著作权等知识产权综合数据</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            10亿+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            定期更新
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 6个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 card-hover cursor-pointer" onclick="window.location.href='数据详情.html?id=law'">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#a855f722,#c084fc33)">
+                            ⚖️
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">法律</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">知识产权法律文书</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">专利、商标侵权诉讼及复审无效法律文书</p>
+                    <div class="flex items-center gap-4 mb-4 text-xs text-gray-400">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                            15万+
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            每周更新
+                        </span>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div class="text-xs text-gray-400">字段: 6个</div>
+                        <button class="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-medium hover:opacity-90">查看详情</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-900 text-gray-400 py-10">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm">
+            <p>© 2026 智能空间 · 赋能知识产权数据分析</p>
+        </div>
+    </footer>
+</body>
+</html>

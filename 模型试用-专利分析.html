@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专利智能分析 - GPT-4 - 智能空间</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .card-hover{transition:all 0.3s ease}
+        .card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        .animate-pulse-slow{animation:pulse 2s ease-in-out infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .animate-spin{animation:spin 1s linear infinite}
+        .step-line{position:absolute;top:24px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);height:2px;background:#e5e7eb;z-index:0}
+        .step-line.active{background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+        .step-line.completed{background:#6366f1}
+        @keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-fade-in{animation:fadeSlideIn 0.4s ease-out forwards}
+        @keyframes progress{0%{width:0%}100%{width:100%}}
+        .animate-progress{animation:progress 2s ease-out forwards}
+        textarea{resize:none}
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- 导航 -->
+    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    </div>
+                    <span class="font-bold text-gray-800">智能空间</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-500">模型试用</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <div class="max-w-5xl mx-auto px-6 py-8">
+        
+        <!-- 步骤指示器 -->
+        <div class="mb-10">
+            <div class="flex items-center justify-between relative">
+                <div class="step-line active" id="stepLine1"></div>
+                <div class="step-line" id="stepLine2"></div>
+                
+                <div class="flex flex-col items-center relative z-10">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-lg" id="step1Icon">1</div>
+                    <span class="mt-2 text-sm font-medium text-gray-700">输入数据</span>
+                </div>
+                <div class="flex flex-col items-center relative z-10">
+                    <div class="w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-lg" id="step2Icon">2</div>
+                    <span class="mt-2 text-sm text-gray-500">处理中</span>
+                </div>
+                <div class="flex flex-col items-center relative z-10">
+                    <div class="w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-lg" id="step3Icon">3</div>
+                    <span class="mt-2 text-sm text-gray-500">完成</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步骤1：输入数据 -->
+        <div id="step1" class="animate-fade-in">
+            <!-- 模型信息卡片 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#2563eb,#06b6d4)">
+                        <span class="text-white font-bold text-lg">GP</span>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-lg font-bold text-gray-800">GPT-4 专利智能运行</h2>
+                        <p class="text-sm text-gray-500">批量运行专利申请号，快速提取技术信息、生成摘要摘要</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-indigo-600">¥0.12</div>
+                        <div class="text-xs text-gray-500">/ 1K token</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        专利申请号输入
+                    </h3>
+                    <span class="text-sm text-gray-500" id="countDisplay">已输入 <span class="font-semibold text-indigo-600" id="inputCount">0</span> 条</span>
+                </div>
+                
+                <textarea id="patentInput" class="w-full h-64 p-4 border-2 border-gray-200 rounded-xl text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all" placeholder="请输入专利申请号，每行一个或用逗号分隔&#10;&#10;示例：&#10;CN202310456789.0&#10;CN202210123456.7&#10;US20230123456A&#10;WO2023CN123456"></textarea>
+                
+                <div class="flex items-center justify-between mt-4">
+                    <button onclick="loadSampleData()" class="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        导入示例数据
+                    </button>
+                    <button onclick="clearInput()" class="text-sm text-gray-500 hover:text-gray-700">清空</button>
+                </div>
+            </div>
+
+            <!-- 参数设置 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    分析参数
+                </h3>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-2">分析深度</label>
+                        <select class="w-full p-3 border border-gray-200 rounded-lg text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100">
+                            <option value="basic">基础分析（摘要、权利要求）</option>
+                            <option value="standard" selected>标准分析（+技术领域、法律状态）</option>
+                            <option value="deep">深度分析（+引文、竞争分析）</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-2">输出语言</label>
+                        <select class="w-full p-3 border border-gray-200 rounded-lg text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100">
+                            <option value="zh" selected>中文</option>
+                            <option value="en">英文</option>
+                            <option value="both">中英双语</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">预估费用</span>
+                        <div class="flex items-center gap-4">
+                            <span class="text-gray-500">约 <span class="font-semibold text-indigo-600" id="estimateCost">0</span> 条 × 约 2K token/条</span>
+                            <span class="font-bold text-indigo-600">≈ ¥<span id="estimateTotal">0.00</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="flex items-center justify-between">
+                <button onclick="goBack()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    返回模型详情
+                </button>
+                <button onclick="startAnalysis()" class="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-lg shadow-indigo-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    运行模型
+                </button>
+            </div>
+        </div>
+
+        <!-- 步骤2：处理中 -->
+        <div id="step2" class="hidden">
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
+                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
+                    <svg class="w-10 h-10 text-indigo-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">正在分析中...</h2>
+                <p class="text-gray-500 mb-6" id="processingText">正在处理第 1 条专利，共 5 条</p>
+                
+                <!-- 进度条 -->
+                <div class="w-full max-w-md mx-auto mb-8">
+                    <div class="flex items-center justify-between text-sm text-gray-500 mb-2">
+                        <span>总进度</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                        <div id="progressBar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- 当前处理项 -->
+                <div class="bg-gray-50 rounded-xl p-4 max-w-md mx-auto text-left">
+                    <div class="text-xs text-gray-500 mb-1">正在处理</div>
+                    <div class="font-mono text-sm text-gray-800" id="currentItem">-</div>
+                </div>
+
+                <!-- 预估时间 -->
+                <div class="mt-6 text-sm text-gray-500">
+                    预计剩余时间：<span id="remainingTime">约 2 分钟</span>
+                </div>
+                
+                <!-- 运行时间较长提示 -->
+                <div id="longRunWarning" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                    <div class="flex items-center gap-3 text-amber-800">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div>
+                            <div class="font-medium">批量处理需要一定时间</div>
+                            <div class="text-sm mt-1">处理过程中可以关闭此页面，稍后在我的空间查看结果</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步骤3：完成 -->
+        <div id="step3" class="hidden">
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center mb-6">
+                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
+                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">运行结束！</h2>
+                <p class="text-gray-500" id="completeText">已成功运行 5 条专利数据</p>
+            </div>
+
+            <!-- 结果预览 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        分析结果预览
+                    </h3>
+                    <button onclick="downloadReport()" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        导出报告
+                    </button>
+                </div>
+
+                <!-- 结果列表 -->
+                <div class="space-y-4" id="resultList">
+                    <!-- 示例结果卡片 -->
+                    <div class="border border-gray-200 rounded-xl p-4 hover:border-indigo-300 transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">CN202310456789.0</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">运行成功</span>
+                            </div>
+                            <button class="text-indigo-600 text-sm hover:text-indigo-700">查看详情 →</button>
+                        </div>
+                        <div class="text-sm text-gray-600 line-clamp-2">
+                            <strong>技术摘要：</strong>本发明涉及一种新能源汽车电池热管理系统，通过优化冷却液循环路径，实现电池温度的均匀控制，有效提升电池使用寿命和安全性...
+                        </div>
+                        <div class="mt-3 flex items-center gap-4 text-xs text-gray-400">
+                            <span>技术领域：新能源电池</span>
+                            <span>运行耗时：1.2s</span>
+                            <span>Token消耗：1,847</span>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-xl p-4 hover:border-indigo-300 transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">CN202210123456.7</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">运行成功</span>
+                            </div>
+                            <button class="text-indigo-600 text-sm hover:text-indigo-700">查看详情 →</button>
+                        </div>
+                        <div class="text-sm text-gray-600 line-clamp-2">
+                            <strong>技术摘要：</strong>本实用新型公开了一种智能家居控制系统，包括中央控制单元、多个传感器模块和执行器模块...
+                        </div>
+                        <div class="mt-3 flex items-center gap-4 text-xs text-gray-400">
+                            <span>技术领域：智能家居</span>
+                            <span>运行耗时：0.9s</span>
+                            <span>Token消耗：1,523</span>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-xl p-4 hover:border-indigo-300 transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">US20230123456A</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">运行成功</span>
+                            </div>
+                            <button class="text-indigo-600 text-sm hover:text-indigo-700">查看详情 →</button>
+                        </div>
+                        <div class="text-sm text-gray-600 line-clamp-2">
+                            <strong>技术摘要：</strong>DISCLOSURE relates to a semiconductor memory device and manufacturing method thereof, comprising a three-dimensional stacked structure...
+                        </div>
+                        <div class="mt-3 flex items-center gap-4 text-xs text-gray-400">
+                            <span>技术领域：半导体</span>
+                            <span>运行耗时：1.5s</span>
+                            <span>Token消耗：2,156</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-gray-50 rounded-xl">
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="text-gray-600">
+                            <span class="font-semibold text-gray-800">统计</span>：
+                            成功 3 条 | 失败 0 条 | 总耗时 3.6s | 总Token消耗 5,526
+                        </div>
+                        <div class="text-indigo-600 font-semibold">费用合计：¥0.66</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="flex items-center justify-center gap-4">
+                <button onclick="startNewAnalysis()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    新建分析
+                </button>
+                <button onclick="goBack()" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold hover:opacity-90 transition-opacity flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    返回工作台
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let patentNumbers = [];
+        let analysisCount = 0;
+        let totalCount = 0;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('patentInput');
+            input.addEventListener('input', updateCount);
+            updateCount();
+        });
+
+        // 更新计数
+        function updateCount() {
+            const input = document.getElementById('patentInput').value;
+            const lines = input.split(/[\n,，]/).filter(line => line.trim().length > 0);
+            patentNumbers = lines.map(l => l.trim()).filter(l => l.length > 0);
+            document.getElementById('inputCount').textContent = patentNumbers.length;
+            
+            // 更新预估费用
+            const estimateCost = patentNumbers.length * 2 * 0.12;
+            document.getElementById('estimateCost').textContent = patentNumbers.length;
+            document.getElementById('estimateTotal').textContent = estimateCost.toFixed(2);
+        }
+
+        // 导入示例数据
+        function loadSampleData() {
+            const sampleData = `CN202310456789.0
+CN202210123456.7
+CN202318789012.3
+US20230123456A
+WO2023CN123456
+EP3456789A1
+JP2023012345A
+KR1020230012345`;
+            document.getElementById('patentInput').value = sampleData;
+            updateCount();
+        }
+
+        // 清空输入
+        function clearInput() {
+            document.getElementById('patentInput').value = '';
+            updateCount();
+        }
+
+        // 返回
+        function goBack() {
+            window.location.href = '模型详情.html';
+        }
+
+        // 运行模型
+        function startAnalysis() {
+            if (patentNumbers.length === 0) {
+                alert('请输入至少一条专利申请号');
+                return;
+            }
+            
+            totalCount = patentNumbers.length;
+            analysisCount = 0;
+            
+            // 切换到步骤2
+            showStep(2);
+            simulateProgress();
+        }
+
+        // 显示步骤
+        function showStep(step) {
+            // 隐藏所有步骤
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            
+            // 重置步骤图标
+            document.getElementById('step1Icon').className = 'w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-lg';
+            document.getElementById('step2Icon').className = 'w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-lg';
+            document.getElementById('step3Icon').className = 'w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-lg';
+            
+            // 重置线条
+            document.getElementById('stepLine1').className = 'step-line';
+            document.getElementById('stepLine2').className = 'step-line';
+            
+            if (step === 1) {
+                document.getElementById('step1').classList.remove('hidden');
+                document.getElementById('step1Icon').className = 'w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-lg';
+            } else if (step === 2) {
+                document.getElementById('step2').classList.remove('hidden');
+                document.getElementById('step1Icon').className = 'w-12 h-12 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-lg';
+                document.getElementById('step2Icon').className = 'w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-lg';
+                document.getElementById('stepLine1').className = 'step-line completed';
+            } else if (step === 3) {
+                document.getElementById('step3').classList.remove('hidden');
+                document.getElementById('step1Icon').className = 'w-12 h-12 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-lg';
+                document.getElementById('step2Icon').className = 'w-12 h-12 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-lg';
+                document.getElementById('step3Icon').className = 'w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center font-bold text-lg shadow-lg';
+                document.getElementById('stepLine1').className = 'step-line completed';
+                document.getElementById('stepLine2').className = 'step-line completed';
+                
+                document.getElementById('completeText').textContent = `已成功运行 ${totalCount} 条专利数据`;
+            }
+        }
+
+        // 模拟进度
+        function simulateProgress() {
+            let currentIndex = 0;
+            const interval = setInterval(() => {
+                currentIndex++;
+                analysisCount = currentIndex;
+                
+                const progress = Math.round((currentIndex / totalCount) * 100);
+                document.getElementById('progressPercent').textContent = progress + '%';
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('processingText').textContent = `正在处理第 ${Math.min(currentIndex, totalCount)} 条专利，共 ${totalCount} 条`;
+                document.getElementById('currentItem').textContent = patentNumbers[currentIndex - 1] || '-';
+                
+                // 预估剩余时间
+                const remaining = Math.max(1, Math.round((totalCount - currentIndex) * 0.5));
+                document.getElementById('remainingTime').textContent = `约 ${remaining} 分钟`;
+                
+                // 运行时间较长提示（预估超过2分钟时显示）
+                if (remaining >= 2) {
+                    document.getElementById('longRunWarning').classList.remove('hidden');
+                }
+                
+                if (currentIndex >= totalCount) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        showStep(3);
+                    }, 500);
+                }
+            }, 800);
+        }
+
+        // 下载报告
+        function downloadReport() {
+            alert('正在生成报告，请稍候...');
+        }
+
+        // 新建分析
+        function startNewAnalysis() {
+            clearInput();
+            showStep(1);
+        }
+    </script>
+</body>
+</html>
